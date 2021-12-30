@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 public class ClassPathFileLoader {
 
     public Stream<String> readLines(String classPath) {
+
         InputStream resource = TemperatureService.class.getClassLoader().getResourceAsStream(classPath);
         if (resource == null) {
             throw new IllegalArgumentException("No file named " + classPath + " in classPath");

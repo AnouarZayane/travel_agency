@@ -1,9 +1,8 @@
 package fr.lernejo.prediction;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -13,18 +12,18 @@ public class Controller
     final TemperatureService ts = new TemperatureService();
 
     @GetMapping(value="/api/temperature")
-    public Object getTemperature(@RequestParam String country)
+    public Object get(@RequestParam String country)
     {
-        EnglobingTemperature t = new EnglobingTemperature(country,new ArrayList<Temperature>());
         LocalDate ld = LocalDate.now();
+        Temperatures t = new Temperatures(country,new ArrayList<Temperature>());
         try
         {
-            t.englobingtemperature().add(new Temperature(ld.minusDays(1).toString(),ts.getTemperature(country)));
-            t.englobingtemperature().add(new Temperature(ld.minusDays(2).toString(),ts.getTemperature(country)));
+            t.temperatures().add(new Temperature(ld.minusDays(1).toString(),ts.getTemperature(country)));
+            t.temperatures().add(new Temperature(ld.minusDays(2).toString(),ts.getTemperature(country)));
         }
-        catch (Exception e)
+        catch (UnknownCountryException e)
         {
-            System.out.println("Error");
+            return ResponseEntity.status(417).body("Error");
         }
         return t;
     }
